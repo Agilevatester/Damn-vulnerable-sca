@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.tukaani.xz.LZMA2Options;
-import org.tukaani.xz.XZOutputStream;
-
+import org.zeroturnaround.zip.ZipUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,25 +31,15 @@ public class FileUploadApi {
 				Files.createDirectories(uploadPath);
 			}
 
-			// Get the file and save it
-			byte[] bytes = file.getBytes();
-			Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-			Files.write(path, bytes);
+     		// Save the uploaded file
+            Path savedFilePath = uploadPath.resolve(file.getOriginalFilename());
+            Files.write(savedFilePath, file.getBytes());
 
-			Path zipPath = Paths.get(UPLOAD_DIR + file.getOriginalFilename() + ".xz");
-			LZMA2Options options = new LZMA2Options();
-			
-			try (XZOutputStream xz = new XZOutputStream(Files.newOutputStream(zipPath), options);
-				 java.io.InputStream inputStream = Files.newInputStream(path)) {
-				
-				byte[] buf = new byte[8192];
-				int size;
-				while ((size = inputStream.read(buf)) != -1) {
-					xz.write(buf, 0, size);
-				}
-				
-				xz.finish();
-			}
+            // If the file is a zip, extract it
+            if (file.getOriginalFilename().toLowerCase().endsWith(".zip")) {
+                ZipUtil.unpack(savedFilePath.toFile(), uploadPath.toFile());
+            }
+
 
 			return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully: " + file.getOriginalFilename() + " -> " + path + " -> " + zipPath);
 		} catch (IOException e) {

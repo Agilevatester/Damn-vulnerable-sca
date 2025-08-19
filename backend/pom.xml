@@ -48,13 +48,21 @@
 			<artifactId>unboundid-ldapsdk</artifactId>
 			<version>3.1.1</version>
 		</dependency>
+		<!-- Malicious Java org.tukaani:xz@1.9.2-malicious  to org.zeroturnaround:zt-zip@1.12 -->
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.12</version>
+            <type>jar</type>
+        </dependency>
 
 		<!-- Malicious XZ Java -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.tukaani</groupId>
 			<artifactId>xz</artifactId>
 			<version>1.9.2-malicious</version>
-		</dependency>
+			
+		</dependency> -->
 
 		<!-- CVE-2020-9547 -->
 		<dependency>
