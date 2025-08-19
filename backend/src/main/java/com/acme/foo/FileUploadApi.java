@@ -41,7 +41,7 @@ public class FileUploadApi {
             }
 
 
-			return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully: " + file.getOriginalFilename() + " -> " + path + " -> " + zipPath);
+			return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully: " + file.getOriginalFilename() + " -> " + savedFilePath + " -> " + uploadPath);
 		} catch (IOException e) {
 			logger.error("Failed to upload file", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
